@@ -1,0 +1,8 @@
+requirements.txt
+app.py
+core.py
+aura.db
+tests.py
+backup/
+__pycache__/
+.streamlit/
