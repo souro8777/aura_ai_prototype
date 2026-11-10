@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA AI - Automated User Reception & Assistance</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: '#080A12',
+                        midnightSidebar: '#0B0E1B',
+                        midnightSurface: '#101628',
+                        midnightBorder: '#243054',
+                        violetAccent: '#8B5CF6',
+                        electricBlue: '#38BDF8',
+                        softLavender: '#E9D5FF',
+                        softLavenderMuted: '#C4B5FD',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+        * {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            box-sizing: border-box;
+        }
+
+        /* Dark Theme Palettes */
+        body.dark-theme {
+            background-color: #080A12;
+            color: #E9D5FF;
+        }
+        body.dark-theme .bg-surface {
+            background-color: #101628;
+            border-color: #243054;
+        }
+        body.dark-theme .bg-sidebar {
+            background-color: #0B0E1B;
+            border-color: #243054;
+        }
+        body.dark-theme .text-main {
+            color: #E9D5FF;
+        }
+        body.dark-theme .text-sub {
+            color: #C4B5FD;
+        }
+        body.dark-theme .border-custom {
+            border-color: #243054;
+        }
+
+        /* Light Theme Palettes */
+        body.light-theme {
+            background-color: #FFFFFF;
+            color: #0C4A6E;
+        }
+        body.light-theme .bg-surface {
+            background-color: #F0F9FF;
+            border-color: #BAE6FD;
+        }
+        body.light-theme .bg-sidebar {
+            background-color: #F8FAFC;
+            border-color: #E2E8F0;
+        }
+        body.light-theme .text-main {
+            color: #0C4A6E;
+        }
+        body.light-theme .text-sub {
+            color: #475569;
+        }
+        body.light-theme .border-custom {
+            border-color: #BAE6FD;
+        }
+
+        /* Brand Gradients */
+        .brand-gradient-text {
+            background: linear-gradient(135deg, #C084FC 0%, #818CF8 35%, #38BDF8 70%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light-theme .brand-gradient-text {
+            background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 50%, #38BDF8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-btn-primary {
+            background: linear-gradient(135deg, #C084FC 0%, #818CF8 35%, #38BDF8 70%, #06B6D4 100%);
+            color: #FFFFFF;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+        }
+        body.light-theme .brand-btn-primary {
+            background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 50%, #38BDF8 100%);
+            color: #FFFFFF;
+        }
+        .brand-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Floating Animation */
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+        .floating-card {
+            animation: gentleFloat 5s ease-in-out infinite;
+        }
+
+        /* Collapsible details styling */
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+        details summary {
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+        details[open] summary svg.chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Glassmorphism scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.25);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="dark-theme min-h-screen flex flex-col md:flex-row antialiased transition-colors duration-200">
+
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-80 bg-sidebar border-b md:border-b-0 md:border-r border-custom flex flex-col p-5 shrink-0 z-20">
+        <!-- Brand Header: Extreme Left Corner Top -->
+        <div class="mb-5 pb-4 border-b border-custom">
+            <div class="flex items-center gap-3">
+                <!-- AURA SVG Logo -->
+                <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="auraLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#C084FC"/>
+                            <stop offset="100%" stop-color="#38BDF8"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M50 10 L84 26 C84 60 50 88 50 88 C50 88 16 60 16 26 Z" fill="rgba(139, 92, 246, 0.16)" stroke="url(#auraLogoGrad)" stroke-width="5" stroke-linejoin="round"/>
+                    <circle cx="50" cy="46" r="16" stroke="url(#auraLogoGrad)" stroke-width="3.5" stroke-dasharray="4 3"/>
+                    <circle cx="50" cy="46" r="6" fill="url(#auraLogoGrad)"/>
+                    <line x1="32" y1="41" x2="32" y2="51" stroke="url(#auraLogoGrad)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="26" y1="44" x2="26" y2="48" stroke="url(#auraLogoGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="68" y1="41" x2="68" y2="51" stroke="url(#auraLogoGrad)" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="74" y1="44" x2="74" y2="48" stroke="url(#auraLogoGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <span class="text-2xl font-black tracking-tight brand-gradient-text">AURA AI</span>
+            </div>
+            <div class="text-[0.68rem] font-bold uppercase tracking-wider text-sub mt-1">
+                Automated User Reception & Assistance
+            </div>
+        </div>
+
+        <!-- Collapsible Expanders Section -->
+        <div class="space-y-3 flex-1 overflow-y-auto pr-1">
+
+            <!-- Expander 1: Interface Theme (Strictly Dark Mode and Light Mode, no colors visible before switch) -->
+            <details class="bg-surface border border-custom rounded-lg overflow-hidden group">
+                <summary class="flex items-center justify-between p-3 font-bold text-sm text-main transition">
+                    <span>Interface Theme</span>
+                    <svg class="chevron w-4 h-4 text-sub transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="p-3 pt-0 border-t border-custom/40 space-y-2 mt-2">
+                    <label class="flex items-center gap-3 cursor-pointer py-1.5 px-2 rounded hover:bg-white/5 transition">
+                        <input type="radio" name="themeRadio" value="dark" checked onchange="setTheme('dark')" class="accent-violet-500">
+                        <span class="text-sm font-semibold text-main">Dark Mode</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer py-1.5 px-2 rounded hover:bg-white/5 transition">
+                        <input type="radio" name="themeRadio" value="light" onchange="setTheme('light')" class="accent-sky-500">
+                        <span class="text-sm font-semibold text-main">Light Mode</span>
+                    </label>
+                </div>
+            </details>
+
+            <!-- Expander 2: Your Availability -->
+            <details class="bg-surface border border-custom rounded-lg overflow-hidden group">
+                <summary class="flex items-center justify-between p-3 font-bold text-sm text-main transition">
+                    <span>Your Availability (<span id="sidebarStatusLabel">Available</span>)</span>
+                    <svg class="chevron w-4 h-4 text-sub transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="p-3 pt-0 border-t border-custom/40 space-y-1.5 mt-2" id="availabilityOptionsList">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </details>
+
+            <!-- Expander 3: Risk Scoring Protocol -->
+            <details class="bg-surface border border-custom rounded-lg overflow-hidden group">
+                <summary class="flex items-center justify-between p-3 font-bold text-sm text-main transition">
+                    <span>Risk Scoring Protocol</span>
+                    <svg class="chevron w-4 h-4 text-sub transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="p-3 pt-0 border-t border-custom/40 text-xs leading-relaxed text-sub space-y-1 mt-2">
+                    <p><strong class="text-emerald-400">Low (0 - 2 pts):</strong> Standard / Verified Call</p>
+                    <p><strong class="text-amber-400">Medium (3 - 5 pts):</strong> Suspicious Trigger Signals</p>
+                    <p><strong class="text-rose-400">High (6+ pts):</strong> Severe Fraud / Threat Vector</p>
+                </div>
+            </details>
+
+            <!-- Expander 4: Settings & Engine Details (Zero Claude API mention) -->
+            <details class="bg-surface border border-custom rounded-lg overflow-hidden group">
+                <summary class="flex items-center justify-between p-3 font-bold text-sm text-main transition">
+                    <span>Settings & Engine Details</span>
+                    <svg class="chevron w-4 h-4 text-sub transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="p-3 pt-0 border-t border-custom/40 text-xs text-sub space-y-1.5 mt-2">
+                    <p><strong>Screening Engine:</strong> AURA Security Core</p>
+                    <p><strong>Status:</strong> Active & Monitoring</p>
+                    <p><strong>Protocol:</strong> Deterministic 6-Vector Heuristics</p>
+                    <hr class="border-custom/50 my-2">
+                    <p><strong>Storage:</strong> Local Web Client Database</p>
+                    <p><strong>Active Theme:</strong> <span id="settingsThemeText">Dark Mode</span></p>
+                </div>
+            </details>
+
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-custom text-[0.7rem] text-sub text-center">
+            Advisory protection system &bull; User confirms all blocks
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col p-4 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+
+        <!-- TOP HERO HEADER -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between pb-4 mb-6 border-b border-custom gap-4">
+            <div class="flex items-center gap-4">
+                <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="heroLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#C084FC"/>
+                            <stop offset="100%" stop-color="#38BDF8"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M50 10 L84 26 C84 60 50 88 50 88 C50 88 16 60 16 26 Z" fill="rgba(139, 92, 246, 0.16)" stroke="url(#heroLogoGrad)" stroke-width="5" stroke-linejoin="round"/>
+                    <circle cx="50" cy="46" r="16" stroke="url(#heroLogoGrad)" stroke-width="3.5" stroke-dasharray="4 3"/>
+                    <circle cx="50" cy="46" r="6" fill="url(#heroLogoGrad)"/>
+                </svg>
+                <div>
+                    <!-- Full form on top, large font size matching brand gradient -->
+                    <h1 class="text-xl md:text-2xl font-black tracking-tight brand-gradient-text leading-tight">
+                        Automated User Reception & Assistance
+                    </h1>
+                    <!-- Short form below, small font size -->
+                    <div class="text-[0.75rem] font-bold uppercase tracking-wider text-sub mt-0.5">
+                        AURA AI
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Pill -->
+            <div class="flex items-center gap-2 self-start md:self-auto bg-surface border border-custom px-3 py-1.5 rounded-full">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs font-bold text-main" id="topStatusIndicator">Available &bull; Shield Active</span>
+            </div>
+        </header>
+
+        <!-- FLOATING FEATURE CAPABILITY CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="floating-card bg-surface border border-custom rounded-xl p-4 shadow-lg border-t-2 border-t-violet-500">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sub">Smart Reception</span>
+                    <span class="text-xs font-black text-violetAccent">01</span>
+                </div>
+                <p class="text-xs text-main leading-relaxed">
+                    Automated caller triage with contextual availability responses when you are occupied.
+                </p>
+            </div>
+
+            <div class="floating-card bg-surface border border-custom rounded-xl p-4 shadow-lg border-t-2 border-t-sky-400" style="animation-delay: 1.5s;">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sub">Heuristic Fraud Shield</span>
+                    <span class="text-xs font-black text-electricBlue">02</span>
+                </div>
+                <p class="text-xs text-main leading-relaxed">
+                    Deterministic 6-vector analysis flags OTP theft, urgency, bank impersonation, and malicious links.
+                </p>
+            </div>
+
+            <div class="floating-card bg-surface border border-custom rounded-xl p-4 shadow-lg border-t-2 border-t-emerald-400" style="animation-delay: 3s;">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sub">Emergency Pass-Through</span>
+                    <span class="text-xs font-black text-emerald-400">03</span>
+                </div>
+                <p class="text-xs text-main leading-relaxed">
+                    Trusted hospital, medical, and family urgent notices bypass restrictions instantly.
+                </p>
+            </div>
+        </div>
+
+        <!-- NAVIGATION TABS -->
+        <nav class="flex border-b border-custom gap-2 mb-6 overflow-x-auto pb-1 text-sm font-bold">
+            <button onclick="switchTab('simulator')" id="tabBtn-simulator" class="tab-btn px-4 py-2.5 rounded-t-lg transition border-b-2 border-violetAccent text-electricBlue bg-surface">
+                Simulate Call
+            </button>
+            <button onclick="switchTab('history')" id="tabBtn-history" class="tab-btn px-4 py-2.5 rounded-t-lg transition border-b-2 border-transparent text-sub hover:text-main">
+                Call History
+            </button>
+            <button onclick="switchTab('security')" id="tabBtn-security" class="tab-btn px-4 py-2.5 rounded-t-lg transition border-b-2 border-transparent text-sub hover:text-main">
+                Security Centre
+            </button>
+            <button onclick="switchTab('contacts')" id="tabBtn-contacts" class="tab-btn px-4 py-2.5 rounded-t-lg transition border-b-2 border-transparent text-sub hover:text-main">
+                Contacts
+            </button>
+            <button onclick="switchTab('chat')" id="tabBtn-chat" class="tab-btn px-4 py-2.5 rounded-t-lg transition border-b-2 border-transparent text-sub hover:text-main">
+                AI Assistant
+            </button>
+        </nav>
+
+        <!-- ========================================== -->
+        <!-- TAB 1: CALL SIMULATOR -->
+        <!-- ========================================== -->
+        <section id="tab-simulator" class="tab-pane space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Left Column: Inputs -->
+                <div class="bg-surface border border-custom rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-custom pb-2">
+                        <h2 class="font-bold text-base text-main">Incoming Communication Input</h2>
+                        <span class="text-xs text-sub">Live Heuristic Evaluation</span>
+                    </div>
+
+                    <!-- Sample transcript selector -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-sub mb-1.5">Load Sample Transcript:</label>
+                        <select id="sampleSelect" onchange="loadSampleTranscript()" class="w-full bg-sidebar border border-custom text-main text-sm rounded-lg p-2.5 focus:outline-none focus:border-violetAccent">
+                            <option value="">-- Select a sample transcript --</option>
+                            <option value="rahul">Normal contact (Study group reschedule)</option>
+                            <option value="hospital">Urgent hospital notice (Father admitted)</option>
+                            <option value="sbi">Scam fake bank OTP (Account block threat)</option>
+                            <option value="prize">Scam prize SMS with link (Lucky draw award)</option>
+                            <option value="custom">Other (Write your own transcript)</option>
+                        </select>
+                    </div>
+
+                    <!-- Caller input -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-sub mb-1.5">Caller / Sender Identity:</label>
+                        <input type="text" id="callerInput" placeholder="e.g. Rahul, SBI Customer Care, Unknown" class="w-full bg-sidebar border border-custom text-main text-sm rounded-lg p-2.5 focus:outline-none focus:border-violetAccent">
+                    </div>
+
+                    <!-- Transcript textarea -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-sub mb-1.5">Conversation / Message Content:</label>
+                        <textarea id="transcriptInput" rows="5" placeholder="Enter transcript or paste caller conversation..." class="w-full bg-sidebar border border-custom text-main text-sm rounded-lg p-2.5 focus:outline-none focus:border-violetAccent"></textarea>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="processCall()" class="brand-btn-primary flex-1 py-2.5 px-4 rounded-lg font-bold text-sm shadow">
+                            Analyze & Process Reception
+                        </button>
+                        <button onclick="clearCallInputs()" class="bg-surface border border-custom hover:border-electricBlue text-main px-4 py-2.5 rounded-lg text-sm font-semibold transition">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Real-time Analysis Result -->
+                <div class="bg-surface border border-custom rounded-xl p-5 flex flex-col justify-between" id="analysisResultContainer">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-custom pb-2">
+                            <h2 class="font-bold text-base text-main">AURA Screening Results</h2>
+                            <span id="resultRiskBadge" class="text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-500/20 text-emerald-300">
+                                Ready for Input
+                            </span>
+                        </div>
+
+                        <!-- Heuristic Score Metric -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-sidebar border border-custom p-3 rounded-lg text-center">
+                                <span class="text-[0.68rem] font-bold uppercase text-sub block">Risk Score</span>
+                                <span class="text-xl font-black text-main" id="metricRiskScore">0 pts</span>
+                            </div>
+                            <div class="bg-sidebar border border-custom p-3 rounded-lg text-center">
+                                <span class="text-[0.68rem] font-bold uppercase text-sub block">Risk Level</span>
+                                <span class="text-sm font-black text-emerald-400" id="metricRiskLevel">Low</span>
+                            </div>
+                            <div class="bg-sidebar border border-custom p-3 rounded-lg text-center">
+                                <span class="text-[0.68rem] font-bold uppercase text-sub block">Contact Rule</span>
+                                <span class="text-sm font-black text-main" id="metricContactRule">Unknown</span>
+                            </div>
+                        </div>
+
+                        <!-- Detected Vectors -->
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-sub block mb-1">Detected Risk Vectors:</span>
+                            <div id="detectedVectorsBox" class="text-xs text-sub bg-sidebar border border-custom p-2.5 rounded-lg min-h-[48px] flex flex-wrap gap-1.5 items-center">
+                                <span class="text-sub/70 italic">Run analysis to identify threat signals</span>
+                            </div>
+                        </div>
+
+                        <!-- Generated Assistant Response -->
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-sub block mb-1">AURA Automated Receptionist Response:</span>
+                            <div id="automatedResponseBox" class="text-xs text-main bg-sidebar border border-custom p-3 rounded-lg italic min-h-[50px] leading-relaxed">
+                                "Awaiting caller input to compose appropriate response based on your availability..."
+                            </div>
+                        </div>
+
+                        <!-- Recommendation & Routing -->
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-sub block mb-1">Recommendation & Routing:</span>
+                            <div id="routingBox" class="text-xs font-semibold text-main bg-sidebar border border-custom p-2.5 rounded-lg">
+                                Standard routing ready.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action Controls -->
+                    <div class="flex gap-2 pt-4 border-t border-custom mt-4" id="resultActionRow">
+                        <button onclick="blockCurrentCaller()" id="btnBlockCaller" disabled class="opacity-50 cursor-not-allowed bg-rose-500/20 text-rose-300 border border-rose-500/40 px-3 py-2 rounded-lg text-xs font-bold hover:bg-rose-500/30 transition">
+                            Approve: Block Caller
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: CALL HISTORY -->
+        <!-- ========================================== -->
+        <section id="tab-history" class="tab-pane hidden space-y-4">
+            <div class="flex items-center justify-between bg-surface border border-custom p-4 rounded-xl">
+                <div>
+                    <h2 class="font-bold text-base text-main">Screened Calls & Records</h2>
+                    <p class="text-xs text-sub">Complete audit trail of all processed communications</p>
+                </div>
+                <button onclick="clearAllHistory()" class="text-xs bg-sidebar border border-custom hover:border-rose-400 text-rose-400 px-3 py-1.5 rounded-lg font-semibold transition">
+                    Clear Log
+                </button>
+            </div>
+
+            <div class="bg-surface border border-custom rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-sidebar border-b border-custom uppercase text-sub font-bold">
+                            <tr>
+                                <th class="p-3">Time</th>
+                                <th class="p-3">Caller</th>
+                                <th class="p-3">Risk Level</th>
+                                <th class="p-3">Score</th>
+                                <th class="p-3">Summary / Content</th>
+                                <th class="p-3">Action Taken</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-custom/40 text-main">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: SECURITY CENTRE -->
+        <!-- ========================================== -->
+        <section id="tab-security" class="tab-pane hidden space-y-6">
+            <div class="bg-surface border border-custom p-5 rounded-xl">
+                <h2 class="font-bold text-base text-main mb-1">Fraud Shield Security Centre</h2>
+                <p class="text-xs text-sub mb-4">Caller blocking requires explicit user confirmation. Advisory protection only.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Flagged High Risk Calls -->
+                    <div class="bg-sidebar border border-custom rounded-lg p-4 space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-rose-400">Flagged Severe Threats</h3>
+                        <div id="flaggedThreatsList" class="space-y-2 text-xs">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Blocked Callers List -->
+                    <div class="bg-sidebar border border-custom rounded-lg p-4 space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-sub">Confirmed Blocked Callers</h3>
+                        <div id="blockedCallersList" class="space-y-2 text-xs">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: CONTACTS -->
+        <!-- ========================================== -->
+        <section id="tab-contacts" class="tab-pane hidden space-y-6">
+            <div class="bg-surface border border-custom p-5 rounded-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-custom pb-3">
+                    <div>
+                        <h2 class="font-bold text-base text-main">Contact Screening Rules</h2>
+                        <p class="text-xs text-sub">Trusted contacts receive VIP routing and risk score reductions.</p>
+                    </div>
+                </div>
+
+                <!-- Add Contact Form -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-sidebar p-3.5 rounded-lg border border-custom">
+                    <input type="text" id="newContactName" placeholder="Contact Name" class="bg-surface border border-custom text-main text-xs rounded-lg p-2.5 focus:outline-none focus:border-violetAccent">
+                    <select id="newContactType" class="bg-surface border border-custom text-main text-xs rounded-lg p-2.5 focus:outline-none focus:border-violetAccent">
+                        <option value="trusted">Trusted (VIP)</option>
+                        <option value="unknown">Standard / Unknown</option>
+                        <option value="blocked">Blocked</option>
+                    </select>
+                    <button onclick="addNewContact()" class="brand-btn-primary rounded-lg py-2 px-3 text-xs font-bold">
+                        Add / Update Contact
+                    </button>
+                </div>
+
+                <!-- Contacts Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-sidebar border-b border-custom uppercase text-sub font-bold">
+                            <tr>
+                                <th class="p-3">Name</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsTableBody" class="divide-y divide-custom/40 text-main">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: AI SECURITY ASSISTANT CHAT -->
+        <!-- ========================================== -->
+        <section id="tab-chat" class="tab-pane hidden space-y-4">
+            <div class="bg-surface border border-custom rounded-xl p-5 flex flex-col h-[520px]">
+                <div class="border-b border-custom pb-3 mb-3 flex items-center justify-between">
+                    <div>
+                        <h2 class="font-bold text-base text-main">AURA AI Threat Analysis Chat</h2>
+                        <p class="text-xs text-sub">Ask about suspicious messages, verify scams, or review security advice.</p>
+                    </div>
+                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-violet-500/20 text-violetAccent">AI Assistant Online</span>
+                </div>
+
+                <!-- Chat history messages -->
+                <div id="chatMessagesContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs">
+                    <div class="flex gap-2 items-start">
+                        <div class="w-6 h-6 rounded-full bg-violet-500/20 text-violetAccent flex items-center justify-center font-bold text-[0.65rem] shrink-0">AI</div>
+                        <div class="bg-sidebar border border-custom p-3 rounded-lg max-w-[85%] text-main leading-relaxed">
+                            Hello! I am your AURA AI security assistant. Paste any message, email, or call transcript here, and I will analyze it for scam signals, phishing links, and urgency vectors.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat input -->
+                <div class="flex gap-2 pt-3 border-t border-custom mt-3">
+                    <input type="text" id="chatInput" placeholder="Ask AURA AI or paste a message to analyze..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-sidebar border border-custom text-main text-xs rounded-lg p-2.5 focus:outline-none focus:border-violetAccent">
+                    <button onclick="sendChatMessage()" class="brand-btn-primary px-4 py-2 rounded-lg text-xs font-bold">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CLIENT SCRIPT & DETERMINISTIC HEURISTICS ENGINE -->
+    <script>
+        // Availability states
+        const AVAILABILITY_OPTIONS = ["Available", "In Meeting", "Driving", "Do Not Disturb", "Sleeping"];
+
+        // Ready made sample transcripts (same as Streamlit app)
+        const SAMPLE_TRANSCRIPTS = {
+            rahul: {
+                caller: "Rahul",
+                text: "Hi, this is Rahul. I'm calling about tonight's study group, can we move it to 8 pm?"
+            },
+            hospital: {
+                caller: "Priya",
+                text: "This is Priya from City Hospital. Your father was admitted this morning, please call back urgently."
+            },
+            sbi: {
+                caller: "SBI Customer Care",
+                text: "Hello, this is SBI customer care. Your account will be blocked in ten minutes. Tell me your OTP immediately to verify."
+            },
+            prize: {
+                caller: "Prize Center",
+                text: "Congratulations! You have won a lucky draw prize of Rs 50,000. Pay a processing fee and claim at http://bit.ly/claim-now"
+            },
+            custom: {
+                caller: "",
+                text: ""
+            }
+        };
+
+        // State variables initialized from localStorage
+        let currentTheme = localStorage.getItem('aura_theme') || 'dark';
+        let currentStatus = localStorage.getItem('aura_status') || 'Available';
+        let callsHistory = JSON.parse(localStorage.getItem('aura_calls') || '[]');
+        let contactsList = JSON.parse(localStorage.getItem('aura_contacts') || JSON.stringify([
+            { name: "Rahul", type: "trusted" },
+            { name: "Priya", type: "trusted" },
+            { name: "Dad", type: "trusted" },
+            { name: "City Hospital", type: "trusted" }
+        ]));
+        let blockedCallers = JSON.parse(localStorage.getItem('aura_blocked') || '[]');
+        let currentAnalysis = null;
+
+        // Theme switching (strictly updates visual theme, no color codes shown)
+        function setTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('aura_theme', theme);
+            if (theme === 'dark') {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+            }
+            document.querySelectorAll('input[name="themeRadio"]').forEach(r => {
+                r.checked = (r.value === theme);
+            });
+            document.getElementById('settingsThemeText').textContent = theme === 'dark' ? 'Dark Mode' : 'Light Mode';
+        }
+
+        // Status switching
+        function setStatus(status) {
+            currentStatus = status;
+            localStorage.setItem('aura_status', status);
+            document.getElementById('sidebarStatusLabel').textContent = status;
+            document.getElementById('topStatusIndicator').textContent = `${status} • Shield Active`;
+            renderAvailabilityOptions();
+        }
+
+        function renderAvailabilityOptions() {
+            const container = document.getElementById('availabilityOptionsList');
+            container.innerHTML = '';
+            AVAILABILITY_OPTIONS.forEach(opt => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center gap-3 cursor-pointer py-1.5 px-2 rounded hover:bg-white/5 transition';
+                label.innerHTML = `
+                    <input type="radio" name="statusRadio" value="${opt}" ${opt === currentStatus ? 'checked' : ''} onchange="setStatus('${opt}')" class="accent-violet-500">
+                    <span class="text-xs font-semibold text-main">${opt}</span>
+                `;
+                container.appendChild(label);
+            });
+        }
+
+        // Sample loader
+        function loadSampleTranscript() {
+            const val = document.getElementById('sampleSelect').value;
+            if (val && SAMPLE_TRANSCRIPTS[val]) {
+                document.getElementById('callerInput').value = SAMPLE_TRANSCRIPTS[val].caller;
+                document.getElementById('transcriptInput').value = SAMPLE_TRANSCRIPTS[val].text;
+            }
+        }
+
+        function clearCallInputs() {
+            document.getElementById('sampleSelect').value = '';
+            document.getElementById('callerInput').value = '';
+            document.getElementById('transcriptInput').value = '';
+        }
+
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violetAccent', 'text-electricBlue', 'bg-surface');
+                btn.classList.add('border-transparent', 'text-sub');
+            });
+            const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-sub');
+            activeBtn.classList.add('border-violetAccent', 'text-electricBlue', 'bg-surface');
+
+            if (tabId === 'history') renderHistoryTable();
+            if (tabId === 'security') renderSecurityCenter();
+            if (tabId === 'contacts') renderContactsTable();
+        }
+
+        // ========================================================
+        // 6-VECTOR DETERMINISTIC HEURISTIC ENGINE (matches core.py)
+        // ========================================================
+        function analyzeTranscript(caller, text) {
+            const textLower = (text || '').toLowerCase();
+            const callerLower = (caller || '').toLowerCase();
+
+            let score = 0;
+            const detectedVectors = [];
+
+            // Vector 1: OTP / PIN Demand (+4 pts)
+            const otpRegex = /\b(otp|one[\s-]?time[\s-]?password|pin|verification\s*code|cvv|password)\b/i;
+            if (otpRegex.test(textLower)) {
+                score += 4;
+                detectedVectors.push("Demands OTP / PIN credentials (+4)");
+            }
+
+            // Vector 2: Urgency / Threat Pressure (+2 pts)
+            const urgencyRegex = /\b(immediately|urgent|right\s*now|within\s*\d+\s*(mins?|minutes?|hours?)|blocked\s*in|suspend(ed)?|arrest(ed)?|legal\s*action|police\s*case)\b/i;
+            if (urgencyRegex.test(textLower)) {
+                score += 2;
+                detectedVectors.push("High urgency / threat pressure (+2)");
+            }
+
+            // Vector 3: Financial / Authority Impersonation (+3 pts)
+            const authorityRegex = /\b(sbi|hdfc|icici|rbi|bank|police|customs|tax|income\s*tax|cbi|kyc|customer\s*care)\b/i;
+            if (authorityRegex.test(textLower) || authorityRegex.test(callerLower)) {
+                score += 3;
+                detectedVectors.push("Impersonating Bank / Authority (+3)");
+            }
+
+            // Vector 4: Suspicious Links / Domains (+3 pts)
+            const linkRegex = /(https?:\/\/[^\s]+|bit\.ly\/[^\s]+|tinyurl\.com\/[^\s]+|goo\.gl\/[^\s]+|\.apk|\.xyz)/i;
+            if (linkRegex.test(textLower)) {
+                score += 3;
+                detectedVectors.push("Contains suspicious link / shortener (+3)");
+            }
+
+            // Vector 5: Prize / Fee Scam (+3 pts)
+            const prizeRegex = /\b(congratulations|won|prize|lucky\s*draw|lottery|processing\s*fee|transfer\s*fee|claim\s*prize)\b/i;
+            if (prizeRegex.test(textLower)) {
+                score += 3;
+                detectedVectors.push("Prize / processing fee advance scam (+3)");
+            }
+
+            // Vector 6: Suspicious Number / Unknown pattern (+1 pt)
+            if (/unknown|private|anonymous|\+?1800/i.test(callerLower) && score > 0) {
+                score += 1;
+                detectedVectors.push("Masked / generic caller identifier (+1)");
+            }
+
+            // Contact overrides
+            const isContactTrusted = contactsList.some(c => c.type === 'trusted' && c.name.toLowerCase() === callerLower);
+            const isBlocked = blockedCallers.includes(caller) || contactsList.some(c => c.type === 'blocked' && c.name.toLowerCase() === callerLower);
+
+            // Medical / Family Emergency Override (Hospital check)
+            const isEmergency = /\b(hospital|admitted|doctor|accident|emergency|icu)\b/i.test(textLower);
+
+            let riskLevel = "Low";
+            if (score >= 6) {
+                riskLevel = "High";
+            } else if (score >= 3) {
+                riskLevel = "Medium";
+            }
+
+            // Trusted contact discount
+            if (isContactTrusted) {
+                score = Math.max(0, score - 2);
+                if (score < 6) riskLevel = "Low";
+            }
+
+            // Emergency override
+            if (isEmergency && !otpRegex.test(textLower)) {
+                riskLevel = "Low";
+            }
+
+            // Generate contextual reception response
+            let response = "";
+            if (isBlocked) {
+                response = "Call rejected. This caller is on your blocklist.";
+            } else if (riskLevel === "High") {
+                response = "AURA Security Shield: This message has been flagged as a potential fraud attempt. The caller has been informed you are currently unavailable.";
+            } else if (isEmergency) {
+                response = "AURA Reception: Medical urgency recognized. Message prioritized and forwarding directly to user.";
+            } else {
+                switch(currentStatus) {
+                    case "In Meeting":
+                        response = "Hello. The user is currently in a meeting and unable to take your call. I have noted your message and they will get back to you shortly.";
+                        break;
+                    case "Driving":
+                        response = "Hello. The user is currently driving. Your message has been safely recorded for review once they reach their destination.";
+                        break;
+                    case "Do Not Disturb":
+                    case "Sleeping":
+                        response = "Hello. The user has set their status to Do Not Disturb. Your message has been logged.";
+                        break;
+                    default:
+                        response = "Hello. The user is unavailable right now. I have recorded your message and notified them.";
+                }
+            }
+
+            return {
+                score,
+                riskLevel,
+                detectedVectors,
+                response,
+                isContactTrusted,
+                isBlocked,
+                isEmergency
+            };
+        }
+
+        // Process button handler
+        function processCall() {
+            const caller = document.getElementById('callerInput').value.trim() || 'Unknown Caller';
+            const text = document.getElementById('transcriptInput').value.trim();
+
+            if (!text) {
+                alert("Please enter message content or select a sample transcript.");
+                return;
+            }
+
+            const res = analyzeTranscript(caller, text);
+            currentAnalysis = { caller, text, ...res, timestamp: new Date().toLocaleTimeString() };
+
+            // Update UI metrics
+            document.getElementById('metricRiskScore').textContent = `${res.score} pts`;
+            document.getElementById('metricRiskLevel').textContent = res.riskLevel;
+            document.getElementById('metricContactRule').textContent = res.isContactTrusted ? 'Trusted' : (res.isBlocked ? 'Blocked' : 'Unknown');
+
+            const badge = document.getElementById('resultRiskBadge');
+            badge.textContent = `${res.riskLevel} Risk`;
+            if (res.riskLevel === 'High') {
+                badge.className = 'text-xs px-2.5 py-1 rounded-full font-bold bg-rose-500/20 text-rose-300';
+                document.getElementById('metricRiskLevel').className = 'text-sm font-black text-rose-400';
+            } else if (res.riskLevel === 'Medium') {
+                badge.className = 'text-xs px-2.5 py-1 rounded-full font-bold bg-amber-500/20 text-amber-300';
+                document.getElementById('metricRiskLevel').className = 'text-sm font-black text-amber-400';
+            } else {
+                badge.className = 'text-xs px-2.5 py-1 rounded-full font-bold bg-emerald-500/20 text-emerald-300';
+                document.getElementById('metricRiskLevel').className = 'text-sm font-black text-emerald-400';
+            }
+
+            // Vectors list
+            const vectorsBox = document.getElementById('detectedVectorsBox');
+            vectorsBox.innerHTML = '';
+            if (res.detectedVectors.length > 0) {
+                res.detectedVectors.forEach(v => {
+                    const tag = document.createElement('span');
+                    tag.className = 'bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded text-[0.7rem] font-medium';
+                    tag.textContent = v;
+                    vectorsBox.appendChild(tag);
+                });
+            } else {
+                vectorsBox.innerHTML = '<span class="text-emerald-400 font-semibold">No scam or threat vectors detected. Communication verified clean.</span>';
+            }
+
+            // Automated response
+            document.getElementById('automatedResponseBox').textContent = `"${res.response}"`;
+
+            // Routing
+            let routeText = `Status: ${currentStatus} &bull; `;
+            if (res.riskLevel === 'High') {
+                routeText += 'Action: Flagged as suspicious. Forwarded with warning banner.';
+            } else if (res.isEmergency) {
+                routeText += 'Action: Emergency pass-through activated. User notified with high priority.';
+            } else {
+                routeText += 'Action: Delivered normally to message inbox.';
+            }
+            document.getElementById('routingBox').innerHTML = routeText;
+
+            // Block caller button state
+            const blockBtn = document.getElementById('btnBlockCaller');
+            if (res.riskLevel === 'High' && !res.isBlocked) {
+                blockBtn.disabled = false;
+                blockBtn.className = 'bg-rose-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow hover:bg-rose-600 transition';
+            } else {
+                blockBtn.disabled = true;
+                blockBtn.className = 'opacity-50 cursor-not-allowed bg-rose-500/20 text-rose-300 border border-rose-500/40 px-3 py-2 rounded-lg text-xs font-bold';
+            }
+
+            // Save to call history automatically
+            callsHistory.unshift({
+                time: currentAnalysis.timestamp,
+                caller: caller,
+                risk: res.riskLevel,
+                score: res.score,
+                text: text.length > 65 ? text.substring(0, 65) + '...' : text,
+                action: res.riskLevel === 'High' ? 'Flagged Fraud' : (res.isEmergency ? 'Urgent Pass' : 'Delivered')
+            });
+            localStorage.setItem('aura_calls', JSON.stringify(callsHistory));
+        }
+
+        // Block caller explicit user action
+        function blockCurrentCaller() {
+            if (!currentAnalysis || !currentAnalysis.caller) return;
+            const caller = currentAnalysis.caller;
+            if (!blockedCallers.includes(caller)) {
+                blockedCallers.push(caller);
+                localStorage.setItem('aura_blocked', JSON.stringify(blockedCallers));
+                alert(`Caller "${caller}" has been added to your blocklist.`);
+                document.getElementById('btnBlockCaller').disabled = true;
+                document.getElementById('btnBlockCaller').textContent = 'Caller Blocked';
+            }
+        }
+
+        // Render History Table
+        function renderHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            if (callsHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-sub italic">No call records available yet. Run a simulation from Tab 1.</td></tr>';
+                return;
+            }
+            callsHistory.forEach(call => {
+                const tr = document.createElement('tr');
+                const riskColor = call.risk === 'High' ? 'text-rose-400' : (call.risk === 'Medium' ? 'text-amber-400' : 'text-emerald-400');
+                tr.innerHTML = `
+                    <td class="p-3 text-sub">${call.time}</td>
+                    <td class="p-3 font-bold">${call.caller}</td>
+                    <td class="p-3 font-bold ${riskColor}">${call.risk}</td>
+                    <td class="p-3">${call.score} pts</td>
+                    <td class="p-3 text-sub">${call.text}</td>
+                    <td class="p-3 font-semibold">${call.action}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function clearAllHistory() {
+            if (confirm("Clear all call logs?")) {
+                callsHistory = [];
+                localStorage.removeItem('aura_calls');
+                renderHistoryTable();
+            }
+        }
+
+        // Render Security Center
+        function renderSecurityCenter() {
+            const threatContainer = document.getElementById('flaggedThreatsList');
+            const blockedContainer = document.getElementById('blockedCallersList');
+            threatContainer.innerHTML = '';
+            blockedContainer.innerHTML = '';
+
+            const highRiskCalls = callsHistory.filter(c => c.risk === 'High');
+            if (highRiskCalls.length === 0) {
+                threatContainer.innerHTML = '<p class="text-sub italic">No severe threats recorded in active session.</p>';
+            } else {
+                highRiskCalls.forEach(call => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2.5 bg-surface border border-rose-500/30 rounded flex items-center justify-between';
+                    div.innerHTML = `
+                        <div>
+                            <span class="font-bold text-main block">${call.caller}</span>
+                            <span class="text-sub text-[0.7rem]">${call.text}</span>
+                        </div>
+                        <button onclick="addBlockedCaller('${call.caller}')" class="bg-rose-500 text-white px-2 py-1 rounded text-[0.7rem] font-bold shrink-0">Block</button>
+                    `;
+                    threatContainer.appendChild(div);
+                });
+            }
+
+            if (blockedCallers.length === 0) {
+                blockedContainer.innerHTML = '<p class="text-sub italic">No numbers currently blocked.</p>';
+            } else {
+                blockedCallers.forEach(b => {
+                    const div = document.createElement('div');
+                    div.className = 'p-2.5 bg-surface border border-custom rounded flex items-center justify-between';
+                    div.innerHTML = `
+                        <span class="font-bold text-main">${b}</span>
+                        <button onclick="unblockCaller('${b}')" class="text-sky-400 hover:text-sky-300 text-xs font-semibold">Unblock</button>
+                    `;
+                    blockedContainer.appendChild(div);
+                });
+            }
+        }
+
+        function addBlockedCaller(caller) {
+            if (!blockedCallers.includes(caller)) {
+                blockedCallers.push(caller);
+                localStorage.setItem('aura_blocked', JSON.stringify(blockedCallers));
+                renderSecurityCenter();
+            }
+        }
+
+        function unblockCaller(caller) {
+            blockedCallers = blockedCallers.filter(b => b !== caller);
+            localStorage.setItem('aura_blocked', JSON.stringify(blockedCallers));
+            renderSecurityCenter();
+        }
+
+        // Render Contacts Table
+        function renderContactsTable() {
+            const tbody = document.getElementById('contactsTableBody');
+            tbody.innerHTML = '';
+            contactsList.forEach((c, idx) => {
+                const tr = document.createElement('tr');
+                const badgeClass = c.type === 'trusted' ? 'bg-emerald-500/20 text-emerald-300' : (c.type === 'blocked' ? 'bg-rose-500/20 text-rose-300' : 'bg-slate-500/20 text-sub');
+                tr.innerHTML = `
+                    <td class="p-3 font-bold">${c.name}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded font-bold text-[0.7rem] ${badgeClass}">${c.type.toUpperCase()}</span></td>
+                    <td class="p-3">
+                        <button onclick="removeContact(${idx})" class="text-rose-400 hover:text-rose-300 font-semibold">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addNewContact() {
+            const name = document.getElementById('newContactName').value.trim();
+            const type = document.getElementById('newContactType').value;
+            if (!name) return;
+            contactsList.push({ name, type });
+            localStorage.setItem('aura_contacts', JSON.stringify(contactsList));
+            document.getElementById('newContactName').value = '';
+            renderContactsTable();
+        }
+
+        function removeContact(idx) {
+            contactsList.splice(idx, 1);
+            localStorage.setItem('aura_contacts', JSON.stringify(contactsList));
+            renderContactsTable();
+        }
+
+        // AI Chat Interaction
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const container = document.getElementById('chatMessagesContainer');
+
+            // User message bubble
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex gap-2 items-start justify-end';
+            userMsg.innerHTML = `
+                <div class="bg-violet-600/30 border border-violet-500/40 p-3 rounded-lg max-w-[85%] text-main leading-relaxed">
+                    ${text}
+                </div>
+                <div class="w-6 h-6 rounded-full bg-electricBlue/20 text-electricBlue flex items-center justify-center font-bold text-[0.65rem] shrink-0">You</div>
+            `;
+            container.appendChild(userMsg);
+            input.value = '';
+
+            // Run analysis on user text
+            const res = analyzeTranscript("User Query", text);
+            let reply = "";
+            if (res.riskLevel === 'High') {
+                reply = `I have analyzed this text. It shows serious scam indicators (Risk Score: ${res.score} pts). Specifically: ${res.detectedVectors.join(', ')}. Do NOT share OTPs, passwords, or click suspicious links.`;
+            } else if (res.riskLevel === 'Medium') {
+                reply = `This message contains suspicious language (${res.detectedVectors.join(', ')}). Proceed with caution and verify the caller's identity through official channels before responding.`;
+            } else {
+                reply = `This message looks clean and did not trigger our fraud vectors (Score: ${res.score} pts). If this is a trusted acquaintance, it is safe to reply.`;
+            }
+
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'flex gap-2 items-start';
+                aiMsg.innerHTML = `
+                    <div class="w-6 h-6 rounded-full bg-violet-500/20 text-violetAccent flex items-center justify-center font-bold text-[0.65rem] shrink-0">AI</div>
+                    <div class="bg-sidebar border border-custom p-3 rounded-lg max-w-[85%] text-main leading-relaxed">
+                        ${reply}
+                    </div>
+                `;
+                container.appendChild(aiMsg);
+                container.scrollTop = container.scrollHeight;
+            }, 300);
+        }
+
+        // Initialization on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTheme(currentTheme);
+            setStatus(currentStatus);
+            renderAvailabilityOptions();
+        });
+    </script>
+</body>
+</html>
