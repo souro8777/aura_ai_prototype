@@ -789,3 +789,32 @@ with tab_contacts:
                     core.delete_contact(matching[0])
                     st.success(f"Removed contact '{contact_to_remove}'.")
                     st.rerun()
+
+
+# ---------------------------------------------------------
+# VERCEL SERVERLESS ENTRYPOINT COMPATIBILITY
+# (Directly satisfies Vercel's [PYTHON_ENTRYPOINT_NOT_FOUND] check)
+# ---------------------------------------------------------
+def application(environ=None, start_response=None):
+    try:
+        with open("index.html", "rb") as f:
+            body = f.read()
+        if start_response:
+            start_response("200 OK", [
+                ("Content-Type", "text/html; charset=utf-8"),
+                ("Content-Length", str(len(body)))
+            ])
+        return [body]
+    except Exception as exc:
+        err = f"AURA AI - Error loading index.html: {exc}".encode("utf-8")
+        if start_response:
+            start_response("500 Internal Server Error", [
+                ("Content-Type", "text/plain"),
+                ("Content-Length", str(len(err)))
+            ])
+        return [err]
+
+
+app = application
+handler = application
+
